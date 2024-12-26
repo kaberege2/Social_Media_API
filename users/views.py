@@ -5,6 +5,8 @@ from .serializers import RegistrationSerializer, LoginSerializer, UserProfileSer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
 
 # Create your views here.
 
@@ -131,6 +133,17 @@ class FollowUser(views.APIView):
         
         # Add the user to the following list
         request.user.following.add(user_to_follow)
+        
+         # Create a notification for the user being followed
+        notification = Notification(
+            recipient=user_to_follow,  # The user being followed
+            actor=request.user,        # The user who is following
+            verb='followed you',       # Verb explaining the action
+            # Use ContentType to link the notification to the User model
+            target_content_type=ContentType.objects.get_for_model(User),  # The content type for User model
+            target_object_id=user_to_follow.id,  # The specific user being followed
+        )
+        notification.save()
 
         return Response({"message": "user followed successfully."}, status=status.HTTP_200_OK)
 
