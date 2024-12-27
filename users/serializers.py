@@ -3,7 +3,9 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model() # Custom user
 
+    # Serializer for user registration
 class RegistrationSerializer(serializers.ModelSerializer):
+     # Define fields for password and profile_picture
     password = serializers.CharField(write_only=True)
     profile_picture = serializers.ImageField(required=False)
 
@@ -11,14 +13,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ["username", "email", "password", "bio", "profile_picture"]
 
+       # Override the create method to handle user creation logic
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
-        return user
-
+        return user # Return the created user instance
+     
+    # Serializer for user login
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
-
+    
+    # Serializer for viewing the user's profile
 class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture = serializers.SerializerMethodField()
 
@@ -30,7 +35,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         # Return URL or None if no profile picture exists
         return obj.profile_picture.url if obj.profile_picture else None
 
-
+    # Serializer for updating a user's profile
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     profile_picture = serializers.ImageField(required=False, allow_null=True)
     password = serializers.CharField(write_only=True, required=False, allow_blank=True)

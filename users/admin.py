@@ -22,14 +22,15 @@ class CustomUserAdmin(UserAdmin):
     
     # Default ordering in the admin panel
     ordering = ('username',)
+
     # Customize the fieldsets (used for editing existing users)
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('bio', 'profile_picture')}),  # Add 'bio' and 'profile_picture' fields
+        (None, {'fields': ('bio', 'profile_picture', 'followers')}),  # Add 'bio' and 'profile_picture' fields
     )
 
     # Customize the add_fieldsets (used for creating new users)
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('bio', 'profile_picture')}),  # Add 'bio' and 'profile_picture' fields
+        (None, {'fields': ('bio', 'profile_picture', 'followers' )}),  # Add 'bio' and 'profile_picture' fields
     )
 
 # Register the custom user model with the custom admin interface

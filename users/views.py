@@ -8,8 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
 
-# Create your views here.
-
 User = get_user_model()  # Custom user model
 
 class RegisterView(views.APIView):

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 # Create your models here.
 User = get_user_model()
 
+    # Post model represents a post content
 class Post(models.Model):
     title = models.CharField(max_length=100, null=False, blank=False)
     content = models.TextField(null=False, blank=False)
@@ -15,6 +16,7 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    # Comment model represents a comment made on a Post
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
@@ -24,10 +26,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment on {self.post} by { self.author}'
-
+        
+    # Like model represents a "like" action made by a User on a Post
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
 
     class Meta:
         unique_together = ['user', 'post']

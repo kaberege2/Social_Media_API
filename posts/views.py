@@ -13,10 +13,11 @@ from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()  # Custom user model
 
+# Pagination class to handle post pagination
 class PostPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 10  # Number of posts per page
 
-# Create your views here.
+# Viewset for managing posts
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -30,6 +31,7 @@ class PostViewSet(viewsets.ModelViewSet):
     
 
     def perform_create(self, serializer):
+         # Automatically set the author of the post to the current logged-in user
         serializer.save(author=self.request.user)
 
     def perform_update(self, serializer):
@@ -44,6 +46,7 @@ class PostViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("You can only delete your own posts!")
         instance.delete()
 
+# View for displaying a user's feed (posts from followed users)
 class PostFeed(generics.ListAPIView):
     #queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -56,10 +59,12 @@ class PostFeed(generics.ListAPIView):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        # Get posts from users that the current user is following
         following_users = self.request.user.following.all()
         feed = Post.objects.filter(author__in=following_users).order_by('-created_at')
         return feed
 
+# Viewset for managing comments on posts
 class CommentViewset(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -101,6 +106,7 @@ class CommentViewset(viewsets.ModelViewSet):
             raise PermissionDenied("You can only delete your own posts.")
         instance.delete()
 
+# View for liking a post
 class LikePostView(views.APIView):
     def post(self, request, post_id):
         user = request.user
@@ -129,6 +135,7 @@ class LikePostView(views.APIView):
         
         return Response({'detail': 'You liked this post.'}, status=status.HTTP_201_CREATED)
 
+# View for unliking a post
 class UnlikePostView(views.APIView):
     def delete(self, request, post_id):
         user = request.user

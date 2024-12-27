@@ -6,14 +6,13 @@ from .models import Notification
 from .serializers import NotificationSerializer
 from rest_framework.pagination import PageNumberPagination
 
-# Create your views here.
-
-# A custom pagination class
+# A custom pagination class for notifications
 class NotificationPagination(PageNumberPagination):
     page_size = 10  # Define how many notifications per page (adjust as needed)
     page_size_query_param = 'page_size'  # Allow the client to override page_size via query param
     max_page_size = 100  # Set a maximum page size
 
+# This view handles the listing of notifications for an authenticated user
 class NotificationListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = NotificationSerializer
@@ -39,6 +38,7 @@ class NotificationListView(generics.ListAPIView):
             'read_notifications': read_serializer.data,      # Read after
         }, status=status.HTTP_200_OK)
 
+# View to mark a specific notification as read or unread
 class MarkNotificationReadView(views.APIView):
     permission_classes = [IsAuthenticated]
 
