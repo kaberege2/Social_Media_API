@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Notification
 from .serializers import NotificationSerializer
 from rest_framework.pagination import PageNumberPagination
+from drf_yasg.utils import swagger_auto_schema
 
 # A custom pagination class for notifications
 class NotificationPagination(PageNumberPagination):
@@ -38,10 +39,22 @@ class NotificationListView(generics.ListAPIView):
             'read_notifications': read_serializer.data,      # Read after
         }, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        operation_summary="Retrieve a list of notifications",
+        operation_description="This endpoint returns a list of notifications for the authenticated user, with unread notifications listed first, followed by read notifications. Notifications are ordered by timestamp, with the most recent appearing at the top. You can filter the notifications by read/unread status."
+     )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+        
+
 # View to mark a specific notification as read or unread
 class MarkNotificationReadView(views.APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+    operation_summary="Mark notifications as read",
+    operation_description="This marks notifications as read"
+    )
     def post(self, request, pk):
         try:
             # Attempt to get the notification for the user
@@ -53,6 +66,10 @@ class MarkNotificationReadView(views.APIView):
             # If notification is not found, return a 404 error
             return Response({"error": "Notification not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    @swagger_auto_schema(
+    operation_summary="Mark notifications as unread",
+    operation_description="This marks notifications as unread"
+    )
     def delete(self, request, pk):
         try:
             # Attempt to get the notification for the user

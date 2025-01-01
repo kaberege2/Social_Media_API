@@ -7,11 +7,16 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
+from drf_yasg.utils import swagger_auto_schema
 
 User = get_user_model()  # Custom user model
 
 class RegisterView(views.APIView):
     # Handle user registration requests
+    @swagger_auto_schema(
+    operation_summary="Register a user",
+    operation_description="Handle user registration requests"
+    )
     def post(self, request):
         # Initialize the serializer with the provided request data
         serializer = RegistrationSerializer(data=request.data)
@@ -30,6 +35,10 @@ class RegisterView(views.APIView):
 
 class LoginView(views.APIView):
     # Handle user login requests
+    @swagger_auto_schema(
+    operation_summary="Login a user",
+    operation_description="This handles user login requests and generates JWT"
+    )
     def post(self, request):
         # Initialize the login serializer with the provided request data
         serializer = LoginSerializer(data=request.data)
@@ -61,7 +70,11 @@ class LoginView(views.APIView):
 class UserProfileView(views.APIView):
     # Restrict access to authenticated users only
     permission_classes = [IsAuthenticated]
-    
+
+    @swagger_auto_schema(
+    operation_summary="User profile",
+    operation_description="Get the currently authenticated user's profile"
+    )
     def get(self, request):
         # Get the currently authenticated user from the request object
         user = request.user
@@ -80,6 +93,10 @@ class UpdateProfileAPIView(views.APIView):
     # Ensure only authenticated users can access this view
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+    operation_summary="Update user profile",
+    operation_description="This updates a user's profile"
+    )
     def put(self, request):
         # Get the current authenticated user instance (the one making the request)
         instance = request.user
@@ -104,6 +121,10 @@ class UserProfileDelete(views.APIView):
     # Ensure only authenticated users can access this view
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+    operation_summary="Delete user profile",
+    operation_description="This deletes a user's profile"
+    )
     def delete(self, request):
         # Get the current authenticated user instance (the one making the request)
         instance = request.user
@@ -117,6 +138,10 @@ class UserProfileDelete(views.APIView):
 class FollowUser(views.APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+    operation_summary="Follow a user",
+    operation_description="This follows a user"
+    )
     def post(self, request, user_id):
         # Get the user to follow or return 404 if not found
         user_to_follow = get_object_or_404(User, id=user_id)
@@ -148,6 +173,10 @@ class FollowUser(views.APIView):
 class UnfollowUser(views.APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+    operation_summary="Unfollow a user",
+    operation_description="This unfollows a user"
+    )
     def post(self, request, user_id):
         # Get the user to unfollow or return 404 if not found
         user_to_unfollow = get_object_or_404(User, id=user_id)
