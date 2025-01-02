@@ -222,8 +222,8 @@ class CommentViewset(viewsets.ModelViewSet):
 # View for liking a post
 class LikePostView(views.APIView):
     @swagger_auto_schema(
-    operation_summary="Like a post",
-    operation_description="View for liking a post"
+        operation_summary="Like a post",
+        operation_description="View for liking a post"
     )
     def post(self, request, post_id):
         user = request.user
@@ -255,8 +255,8 @@ class LikePostView(views.APIView):
 # View for unliking a post
 class UnlikePostView(views.APIView):
     @swagger_auto_schema(
-    operation_summary="Unlike a post",
-    operation_description="View for unliking a post"
+        operation_summary="Unlike a post",
+        operation_description="View for unliking a post"
     )
     def delete(self, request, post_id):
         user = request.user

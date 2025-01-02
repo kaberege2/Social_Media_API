@@ -1,23 +1,22 @@
 from django.shortcuts import render
-from rest_framework import views, generics, status
+from rest_framework import views, generics, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Notification
 from .serializers import NotificationSerializer
+from django_filters import rest_framework
 from rest_framework.pagination import PageNumberPagination
 from drf_yasg.utils import swagger_auto_schema
-
-# A custom pagination class for notifications
-class NotificationPagination(PageNumberPagination):
-    page_size = 10  # Define how many notifications per page (adjust as needed)
-    page_size_query_param = 'page_size'  # Allow the client to override page_size via query param
-    max_page_size = 100  # Set a maximum page size
 
 # This view handles the listing of notifications for an authenticated user
 class NotificationListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = NotificationSerializer
-    pagination_class = PageNumberPagination
+    filter_backends = [rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['is_read', 'timestamp']
+    search_fields = ['is_read', 'timestamp']
+    ordering_fields = ['is_read', 'timestamp']
+    #ordering = ['id']
 
     def list(self, request, *args, **kwargs):
         """
@@ -39,6 +38,7 @@ class NotificationListView(generics.ListAPIView):
             'read_notifications': read_serializer.data,      # Read after
         }, status=status.HTTP_200_OK)
 
+
     @swagger_auto_schema(
         operation_summary="Retrieve a list of notifications",
         operation_description="This endpoint returns a list of notifications for the authenticated user, with unread notifications listed first, followed by read notifications. Notifications are ordered by timestamp, with the most recent appearing at the top. You can filter the notifications by read/unread status."
@@ -52,8 +52,8 @@ class MarkNotificationReadView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-    operation_summary="Mark notifications as read",
-    operation_description="This marks notifications as read"
+        operation_summary="Mark notifications as read",
+        operation_description="This marks notifications as read"
     )
     def post(self, request, pk):
         try:
@@ -67,8 +67,8 @@ class MarkNotificationReadView(views.APIView):
             return Response({"error": "Notification not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
-    operation_summary="Mark notifications as unread",
-    operation_description="This marks notifications as unread"
+        operation_summary="Mark notifications as unread",
+        operation_description="This marks notifications as unread"
     )
     def delete(self, request, pk):
         try:

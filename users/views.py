@@ -14,8 +14,8 @@ User = get_user_model()  # Custom user model
 class RegisterView(views.APIView):
     # Handle user registration requests
     @swagger_auto_schema(
-    operation_summary="Register a user",
-    operation_description="Handle user registration requests"
+        operation_summary="Register a user",
+        operation_description="Handle user registration requests"
     )
     def post(self, request):
         # Initialize the serializer with the provided request data
@@ -36,8 +36,8 @@ class RegisterView(views.APIView):
 class LoginView(views.APIView):
     # Handle user login requests
     @swagger_auto_schema(
-    operation_summary="Login a user",
-    operation_description="This handles user login requests and generates JWT"
+        operation_summary="Login a user",
+        operation_description="This handles user login requests and generates JWT"
     )
     def post(self, request):
         # Initialize the login serializer with the provided request data
@@ -72,8 +72,8 @@ class UserProfileView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-    operation_summary="User profile",
-    operation_description="Get the currently authenticated user's profile"
+        operation_summary="User profile",
+        operation_description="Get the currently authenticated user's profile"
     )
     def get(self, request):
         # Get the currently authenticated user from the request object
@@ -94,8 +94,8 @@ class UpdateProfileAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-    operation_summary="Update user profile",
-    operation_description="This updates a user's profile"
+        operation_summary="Update user profile",
+        operation_description="This updates a user's profile"
     )
     def put(self, request):
         # Get the current authenticated user instance (the one making the request)
@@ -122,8 +122,8 @@ class UserProfileDelete(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-    operation_summary="Delete user profile",
-    operation_description="This deletes a user's profile"
+        operation_summary="Delete user profile",
+        operation_description="This deletes a user's profile"
     )
     def delete(self, request):
         # Get the current authenticated user instance (the one making the request)
@@ -139,8 +139,8 @@ class FollowUser(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-    operation_summary="Follow a user",
-    operation_description="This follows a user"
+        operation_summary="Follow a user",
+        operation_description="This follows a user"
     )
     def post(self, request, user_id):
         # Get the user to follow or return 404 if not found
@@ -174,8 +174,8 @@ class UnfollowUser(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-    operation_summary="Unfollow a user",
-    operation_description="This unfollows a user"
+        operation_summary="Unfollow a user",
+        operation_description="This unfollows a user"
     )
     def post(self, request, user_id):
         # Get the user to unfollow or return 404 if not found
